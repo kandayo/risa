@@ -1,0 +1,66 @@
+GIT
+  remote: https://github.com/meew0/discordrb.git
+  revision: e3e4c8179c15553baf51dc8479409c992212cdb2
+  specs:
+    discordrb (3.2.1)
+      discordrb-webhooks (~> 3.2.0.1)
+      ffi (>= 1.9.24)
+      opus-ruby
+      rbnacl (~> 3.4.0)
+      rest-client (>= 2.1.0.rc1)
+      websocket-client-simple (>= 0.3.0)
+    discordrb-webhooks (3.2.0.1)
+      rest-client (>= 2.1.0.rc1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    awesome_print (1.8.0)
+    domain_name (0.5.20180417)
+      unf (>= 0.0.5, < 1.0.0)
+    event_emitter (0.2.6)
+    ffi (1.9.25)
+    http-accept (1.7.0)
+    http-cookie (1.0.3)
+      domain_name (~> 0.5)
+    mime-types (3.2.2)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2018.0812)
+    netrc (0.11.0)
+    opus-ruby (1.0.1)
+      ffi
+    pg (1.1.3)
+    rainbow (3.0.0)
+    rbnacl (3.4.0)
+      ffi
+    require_all (2.0.0)
+    rest-client (2.1.0.rc1)
+      http-accept (>= 1.7.0, < 2.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
+    sequel (5.13.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.5)
+    websocket (1.2.8)
+    websocket-client-simple (0.3.0)
+      event_emitter
+      websocket
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  awesome_print
+  discordrb!
+  pg (>= 0.18, < 2.0)
+  rainbow
+  require_all
+  sequel
+
+RUBY VERSION
+   ruby 2.5.1p57
+
+BUNDLED WITH
+   1.16.5
