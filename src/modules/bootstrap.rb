@@ -6,7 +6,7 @@ module Bootstrap
   ready do |event|
     next unless server = event.bot.server(ENV['SERVER'])
 
-    server.channels.each do |channel|
+    server.text_channels.each do |channel|
       next if Channel[channel.id]
       Channel.add(channel)
     end
