@@ -3,7 +3,7 @@ $$
   BEGIN
     UPDATE members SET
       attachments_count = attachments_count - 1,
-      attachments_size = attachments_size - NEW.size
+      attachments_size = attachments_size - OLD.size
       WHERE id IN (SELECT member_id FROM messages WHERE id = OLD.message_id);
 
     UPDATE channels SET
