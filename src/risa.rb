@@ -8,13 +8,14 @@ module Risa
   require_relative 'logger'
   require_all 'src/modules/*.rb'
 
-  bot = Discordrb::Bot.new token: ENV['RISA_TOKEN'], fancy_log: true
+  BOT = Discordrb::Bot.new token: ENV['RISA_TOKEN'], fancy_log: true
 
-  bot.include! Bootstrap
-  bot.include! ChannelStalker
-  bot.include! MemberStalker
-  bot.include! MessageStalker
-  bot.include! RoleStalker
+  BOT.include! Bootstrap
+  BOT.include! Registration
+  BOT.include! ChannelStalker
+  BOT.include! MemberStalker
+  BOT.include! MessageStalker
+  BOT.include! RoleStalker
 
-  bot.run
+  BOT.run
 end

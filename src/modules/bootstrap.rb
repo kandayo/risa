@@ -6,19 +6,44 @@ module Bootstrap
   ready do |event|
     next unless server = event.bot.server(ENV['SERVER'])
 
-    server.text_channels.each do |channel|
-      next if Channel[channel.id]
-      Channel.add(channel)
+    server.roles.each do |_|
+      update Role, _
     end
 
-    server.roles.each do |role|
-      next if Role[role.id]
-      Role.add(role)
+    server.members.each do |_|
+      update Member, _
     end
 
-    server.members.each do |member|
-      next if Member[member.id]
-      Member.add(member)
+    server.text_channels.each do |_|
+      update Channel, _
+      fetch_unstalked_messages _
+    end
+  end
+
+  # Do not use it to iterate over an entire channel.
+  #
+  def self.fetch_unstalked_messages(channel)
+    last_id = nil
+
+    while true do
+      messages = channel.history(100, last_id)
+
+      messages.each do |message|
+        Message.add(message)
+      end
+
+      break if messages.size < 100
+      last_id = messages.last.id
+    end
+  rescue Sequel::UniqueConstraintViolation
+    return
+  end
+
+  def self.update(klass, resource)
+    if item = klass[resource.id]
+      item.edit(resource)
+    else
+      klass.add(resource)
     end
   end
 end

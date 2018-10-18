@@ -7,4 +7,5 @@
 
 # Risa
 
-Risa is a Discord bot that provides integration with our web interface.
+Risa integrates Discord with our website and forums. She does her work really
+well! She processed about one million messages without a single issue.
