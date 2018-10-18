@@ -10,7 +10,7 @@ module Risa
   bot = Discordrb::Bot.new token: ENV['RISA_TOKEN'], fancy_log: true
 
   require_all 'src/modules/*.rb'
-  constants.each { |mod| bot.include! mod }
+  constants.each { |mod| bot.include! const_get(mod) }
 
   bot.run
 end
