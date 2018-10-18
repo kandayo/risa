@@ -1,7 +1,9 @@
-CREATE FUNCTION attachments_after_delete() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION attachments_after_delete() RETURNS trigger AS
 $$
   BEGIN
-    UPDATE members SET attachments_count = attachments_count - 1
+    UPDATE members SET
+      attachments_count = attachments_count - 1,
+      attachments_size = attachments_size - NEW.size
       WHERE id IN (SELECT member_id FROM messages WHERE id = OLD.message_id);
 
     UPDATE channels SET
@@ -14,10 +16,12 @@ $$
 $$ LANGUAGE plpgsql;
 
 
-CREATE FUNCTION attachments_after_insert() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION attachments_after_insert() RETURNS trigger AS
 $$
   BEGIN
-    UPDATE members SET attachments_count = attachments_count + 1
+    UPDATE members SET
+      attachments_count = attachments_count + 1,
+      attachments_size = attachments_size + NEW.size
       WHERE id IN (SELECT member_id FROM messages WHERE id = NEW.message_id);
 
     UPDATE channels SET
@@ -30,7 +34,7 @@ $$
 $$ LANGUAGE plpgsql;
 
 
-CREATE FUNCTION members_roles_after_delete() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION members_roles_after_delete() RETURNS trigger AS
 $$
   BEGIN
     UPDATE members SET roles_count = roles_count - 1
@@ -44,7 +48,7 @@ $$
 $$ LANGUAGE plpgsql;
 
 
-CREATE FUNCTION members_roles_after_insert() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION members_roles_after_insert() RETURNS trigger AS
 $$
   BEGIN
     UPDATE members SET roles_count = roles_count + 1
@@ -57,7 +61,7 @@ $$
 $$ LANGUAGE plpgsql;
 
 
-CREATE FUNCTION mentions_after_delete() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION mentions_after_delete() RETURNS trigger AS
 $$
 BEGIN
   UPDATE members SET mentionings_count = mentionings_count - 1
@@ -71,7 +75,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE FUNCTION mentions_after_insert() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION mentions_after_insert() RETURNS trigger AS
 $$
 BEGIN
   UPDATE members SET mentionings_count = mentionings_count + 1
@@ -85,7 +89,35 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE FUNCTION messages_after_delete() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION role_mentions_after_delete() RETURNS trigger AS
+$$
+BEGIN
+  UPDATE members SET mentionings_count = mentionings_count - 1
+    WHERE id IN (SELECT member_id FROM messages WHERE id = OLD.message_id);
+
+  UPDATE roles SET mentions_count = mentions_count - 1
+    WHERE id = OLD.role_id;
+
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION role_mentions_after_insert() RETURNS trigger AS
+$$
+BEGIN
+  UPDATE members SET mentionings_count = mentionings_count + 1
+    WHERE id IN (SELECT member_id FROM messages WHERE id = NEW.message_id);
+
+  UPDATE roles SET mentions_count = mentions_count + 1
+    WHERE id = NEW.role_id;
+
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION messages_after_delete() RETURNS trigger AS
 $$
   BEGIN
     UPDATE members SET messages_count = messages_count - 1
@@ -99,7 +131,7 @@ $$
 $$ LANGUAGE plpgsql;
 
 
-CREATE FUNCTION messages_after_insert() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION messages_after_insert() RETURNS trigger AS
 $$
   BEGIN
     UPDATE members SET messages_count = messages_count + 1
@@ -113,7 +145,7 @@ $$
 $$ LANGUAGE plpgsql;
 
 
-CREATE FUNCTION messages_after_update_edited_timestamp() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION messages_after_update_edited_timestamp() RETURNS trigger AS
 $$
   BEGIN
     UPDATE members SET message_edits_count = message_edits_count + 1
@@ -157,6 +189,16 @@ CREATE TRIGGER mentions_after_insert
   AFTER INSERT ON mentions
   FOR EACH ROW
   EXECUTE PROCEDURE mentions_after_insert();
+
+CREATE TRIGGER role_mentions_after_delete
+  AFTER DELETE ON role_mentions
+  FOR EACH ROW
+  EXECUTE PROCEDURE role_mentions_after_delete();
+
+CREATE TRIGGER role_mentions_after_insert
+  AFTER INSERT ON role_mentions
+  FOR EACH ROW
+  EXECUTE PROCEDURE role_mentions_after_insert();
 
 CREATE TRIGGER messages_after_delete
   AFTER DELETE ON messages
