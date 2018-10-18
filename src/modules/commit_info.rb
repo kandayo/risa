@@ -9,7 +9,7 @@ module Risa
 
       event.user.pm <<~CODE
         ```diff
-        #{`git show --pretty=%H`}
+        #{`git show --pretty=%H`.gsub('`', '\`')}
         ```
       CODE
     end
