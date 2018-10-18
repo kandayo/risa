@@ -3,6 +3,7 @@
 ruby '2.5.1'
 source 'https://rubygems.org'
 
+gem 'bcrypt'
 gem 'discordrb', git: 'https://github.com/meew0/discordrb.git'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'rainbow'
