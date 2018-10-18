@@ -2,6 +2,7 @@
 
 class Role < Sequel::Model
   many_to_many :members
+  one_to_many :mentions
 
   def self.add(role)
     Role.create(

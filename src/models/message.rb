@@ -5,6 +5,7 @@ class Message < Sequel::Model
   many_to_one :member
   one_to_many :attachments
   one_to_many :mentions
+  one_to_many :role_mentions
 
   def self.add(message)
     msg = Message.create(
@@ -17,8 +18,12 @@ class Message < Sequel::Model
       timestamp: message.timestamp
     )
 
-    message.mentions.each do |mention|
-      msg&.add_mention(member_id: mention.id)
+    message.mentions.each do |member|
+      msg&.add_mention(member_id: member.id)
+    end
+
+    message.role_mentions.each do |role|
+      msg&.add_role_mention(role_id: role.id)
     end
 
     message.attachments.each do |attachment|
@@ -41,6 +46,7 @@ class Message < Sequel::Model
   def wipe
     attachments.each(&:delete)
     mentions.each(&:delete)
+    role_mentions.each(&:delete)
     delete
   end
 end
