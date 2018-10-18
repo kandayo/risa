@@ -12,7 +12,7 @@ module MemberStalker
   end
 
   member_leave do |event|
-    Member[event.id]&.deleted!
+    Member[event.user.id]&.deleted!
   end
 
   member_update do |event|
