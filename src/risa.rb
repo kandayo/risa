@@ -6,16 +6,11 @@ require 'require_all'
 module Risa
   require_relative 'database'
   require_relative 'logger'
+
+  bot = Discordrb::Bot.new token: ENV['RISA_TOKEN'], fancy_log: true
+
   require_all 'src/modules/*.rb'
+  constants.each { |mod| bot.include! mod }
 
-  BOT = Discordrb::Bot.new token: ENV['RISA_TOKEN'], fancy_log: true
-
-  BOT.include! Bootstrap
-  BOT.include! Registration
-  BOT.include! ChannelStalker
-  BOT.include! MemberStalker
-  BOT.include! MessageStalker
-  BOT.include! RoleStalker
-
-  BOT.run
+  bot.run
 end
