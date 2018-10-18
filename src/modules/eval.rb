@@ -11,7 +11,7 @@ module Risa
       begin
         event.respond eval(code.captures.first) || '=> nil'
       rescue Exception
-        event.message.react('<:wat:293825338071318529>')
+        event.message.react('wat:293825338071318529')
       end
     end
   end
