@@ -25,7 +25,7 @@ module Bootstrap
   def self.fetch_unstalked_messages(channel)
     last_id = nil
 
-    while true do
+    loop do
       messages = channel.history(100, last_id)
 
       messages.each do |message|
@@ -33,10 +33,11 @@ module Bootstrap
       end
 
       break if messages.size < 100
+
       last_id = messages.last.id
     end
   rescue Sequel::UniqueConstraintViolation
-    return
+    nil
   end
 
   def self.update(klass, resource)
